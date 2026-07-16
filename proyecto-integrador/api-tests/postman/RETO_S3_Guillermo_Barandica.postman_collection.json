@@ -1,0 +1,475 @@
+{
+  "info": {
+    "_postman_id": "5bc83c8c-1da6-4097-aad7-c9f25c600005",
+    "name": "RETO_S3_Guillermo_Barandica",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32791989"
+  },
+  "item": [
+    {
+      "name": "01 - GET Lista de usuarios",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code es 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"La respuesta es un arreglo\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"La respuesta contiene 10 usuarios\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody).to.have.lengthOf(10);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Cada usuario tiene los campos principales\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    responseBody.forEach(function (user) {\r",
+              "        pm.expect(user).to.have.property(\"id\");\r",
+              "        pm.expect(user).to.have.property(\"name\");\r",
+              "        pm.expect(user).to.have.property(\"username\");\r",
+              "        pm.expect(user).to.have.property(\"email\");\r",
+              "    });\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02 - GET Usuario por ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code es 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El usuario consultado tiene id 1\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody.id).to.eql(1);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El usuario tiene nombre y correo\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody.name).to.be.a(\"string\");\r",
+              "    pm.expect(responseBody.email).to.be.a(\"string\");\r",
+              "});\r",
+              "\r",
+              "const userSchema = {\r",
+              "    type: \"object\",\r",
+              "\r",
+              "    required: [\r",
+              "        \"id\",\r",
+              "        \"name\",\r",
+              "        \"username\",\r",
+              "        \"email\",\r",
+              "        \"address\",\r",
+              "        \"phone\",\r",
+              "        \"website\",\r",
+              "        \"company\"\r",
+              "    ],\r",
+              "\r",
+              "    properties: {\r",
+              "        id: {\r",
+              "            type: \"integer\"\r",
+              "        },\r",
+              "\r",
+              "        name: {\r",
+              "            type: \"string\"\r",
+              "        },\r",
+              "\r",
+              "        username: {\r",
+              "            type: \"string\"\r",
+              "        },\r",
+              "\r",
+              "        email: {\r",
+              "            type: \"string\"\r",
+              "        },\r",
+              "\r",
+              "        address: {\r",
+              "            type: \"object\",\r",
+              "\r",
+              "            required: [\r",
+              "                \"street\",\r",
+              "                \"suite\",\r",
+              "                \"city\",\r",
+              "                \"zipcode\",\r",
+              "                \"geo\"\r",
+              "            ],\r",
+              "\r",
+              "            properties: {\r",
+              "                street: {\r",
+              "                    type: \"string\"\r",
+              "                },\r",
+              "\r",
+              "                suite: {\r",
+              "                    type: \"string\"\r",
+              "                },\r",
+              "\r",
+              "                city: {\r",
+              "                    type: \"string\"\r",
+              "                },\r",
+              "\r",
+              "                zipcode: {\r",
+              "                    type: \"string\"\r",
+              "                },\r",
+              "\r",
+              "                geo: {\r",
+              "                    type: \"object\",\r",
+              "\r",
+              "                    required: [\r",
+              "                        \"lat\",\r",
+              "                        \"lng\"\r",
+              "                    ],\r",
+              "\r",
+              "                    properties: {\r",
+              "                        lat: {\r",
+              "                            type: \"string\"\r",
+              "                        },\r",
+              "\r",
+              "                        lng: {\r",
+              "                            type: \"string\"\r",
+              "                        }\r",
+              "                    }\r",
+              "                }\r",
+              "            }\r",
+              "        },\r",
+              "\r",
+              "        phone: {\r",
+              "            type: \"string\"\r",
+              "        },\r",
+              "\r",
+              "        website: {\r",
+              "            type: \"string\"\r",
+              "        },\r",
+              "\r",
+              "        company: {\r",
+              "            type: \"object\",\r",
+              "\r",
+              "            required: [\r",
+              "                \"name\",\r",
+              "                \"catchPhrase\",\r",
+              "                \"bs\"\r",
+              "            ],\r",
+              "\r",
+              "            properties: {\r",
+              "                name: {\r",
+              "                    type: \"string\"\r",
+              "                },\r",
+              "\r",
+              "                catchPhrase: {\r",
+              "                    type: \"string\"\r",
+              "                },\r",
+              "\r",
+              "                bs: {\r",
+              "                    type: \"string\"\r",
+              "                }\r",
+              "            }\r",
+              "        }\r",
+              "    }\r",
+              "};\r",
+              "\r",
+              "pm.test(\"El usuario cumple el JSON Schema\", function () {\r",
+              "    pm.response.to.have.jsonSchema(userSchema);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/users/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03 - POST Crear usuario",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const timestamp = Date.now();\r",
+              "\r",
+              "pm.environment.set(\r",
+              "    \"dynamic_name\",\r",
+              "    `Guillermo QA ${timestamp}`\r",
+              ");\r",
+              "\r",
+              "pm.environment.set(\r",
+              "    \"dynamic_username\",\r",
+              "    `gbarandica_${timestamp}`\r",
+              ");\r",
+              "\r",
+              "pm.environment.set(\r",
+              "    \"dynamic_email\",\r",
+              "    `guillermo.${timestamp}@test.com`\r",
+              ");"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code es 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"La respuesta contiene un id\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody).to.have.property(\"id\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El nombre retornado coincide con el enviado\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "    const expectedName = pm.environment.get(\"dynamic_name\");\r",
+              "\r",
+              "    pm.expect(responseBody.name).to.eql(expectedName);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El username retornado coincide con el enviado\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "    const expectedUsername = pm.environment.get(\r",
+              "        \"dynamic_username\"\r",
+              "    );\r",
+              "\r",
+              "    pm.expect(responseBody.username).to.eql(\r",
+              "        expectedUsername\r",
+              "    );\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El email retornado coincide con el enviado\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "    const expectedEmail = pm.environment.get(\r",
+              "        \"dynamic_email\"\r",
+              "    );\r",
+              "\r",
+              "    pm.expect(responseBody.email).to.eql(\r",
+              "        expectedEmail\r",
+              "    );\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"{{dynamic_name}}\",\r\n    \"username\": \"{{dynamic_username}}\",\r\n    \"email\": \"{{dynamic_email}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04 - PUT Actualizar usuario",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code es 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El usuario actualizado conserva el id 1\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody.id).to.eql(1);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El nombre fue actualizado\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody.name).to.eql(\r",
+              "        \"Guillermo QA Actualizado\"\r",
+              "    );\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El correo fue actualizado\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody.email).to.eql(\r",
+              "        \"guillermo.actualizado@test.com\"\r",
+              "    );\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Guillermo QA Actualizado\",\r\n    \"username\": \"gbarandica\",\r\n    \"email\": \"guillermo.actualizado@test.com\",\r\n    \"phone\": \"3001234567\",\r\n    \"website\": \"guillermoqa.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - DELETE Usuario",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code es 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"La respuesta de eliminación es un objeto vacío\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody).to.be.an(\"object\");\r",
+              "    pm.expect(responseBody).to.be.empty;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/users/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06 - GET Usuario inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code es 404\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"La respuesta es un objeto vacío\", function () {\r",
+              "    const responseBody = pm.response.json();\r",
+              "\r",
+              "    pm.expect(responseBody).to.be.an(\"object\");\r",
+              "    pm.expect(responseBody).to.be.empty;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/users/999999",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "999999"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
