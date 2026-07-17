@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Usuario QA Uno",
+    "username": "qa_uno",
+    "email": "qa.uno@example.com"
+  },
+  {
+    "name": "Usuario QA Dos",
+    "username": "qa_dos",
+    "email": "qa.dos@example.com"
+  },
+  {
+    "name": "Usuario QA Tres",
+    "username": "qa_tres",
+    "email": "qa.tres@example.com"
+  }
+]
