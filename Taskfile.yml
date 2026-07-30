@@ -5,6 +5,9 @@ vars:
   UI_LAB: proyecto-integrador/ui-lab
   API_TESTS: proyecto-integrador/api-tests
   API_LAB: proyecto-integrador/api-lab
+  CI_LAB: proyecto-integrador/ci-lab
+  PERF_LAB: proyecto-integrador/performance
+  SECURITY_LAB: proyecto-integrador/security
 
 tasks:
   # ── Sesión 1: Diseño de pruebas ───────────────────────────────────────────
@@ -59,4 +62,41 @@ tasks:
     desc: "S4 — Suite de APIs: cliente httpx, fixtures y data-driven sobre JSONPlaceholder"
     dir: "{{.API_LAB}}"
     cmds:
+      - uv run pytest -v
+
+  # ── Sesión 5: CI/CD (Docker espejo de GitHub Actions) ─────────────────────
+  test:ci:
+    desc: "S5 — Corre api-lab dentro de Docker (mismo criterio que CI)"
+    dir: "{{.CI_LAB}}"
+    cmds:
+      - docker compose build test
+      - docker compose run --rm --no-deps test
+
+  # ── Sesión 6: Performance K6 ──────────────────────────────────────────────
+  test:perf:smoke:
+    desc: "S6 — Smoke K6 contra target local"
+    dir: "{{.PERF_LAB}}"
+    cmds:
+      - docker compose up -d target
+      - docker compose run --rm k6-smoke
+
+  test:perf:load:
+    desc: "S6 — Load K6 con thresholds"
+    dir: "{{.PERF_LAB}}"
+    cmds:
+      - docker compose up -d target
+      - docker compose run --rm k6-load
+
+  # ── Sesión 7: Seguridad ZAP + Axe ─────────────────────────────────────────
+  test:security:zap:
+    desc: "S7 — OWASP ZAP baseline contra Juice Shop local"
+    dir: "{{.SECURITY_LAB}}"
+    cmds:
+      - python scripts/run_baseline.py
+
+  test:security:axe:
+    desc: "S7 — Demo Axe (WCAG) sobre bad_page.html"
+    dir: "{{.SECURITY_LAB}}/a11y"
+    cmds:
+      - uv sync --group dev
       - uv run pytest -v

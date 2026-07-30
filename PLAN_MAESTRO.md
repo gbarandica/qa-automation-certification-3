@@ -29,7 +29,7 @@
 | Compatibilidad | BrowserStack, SauceLabs, LambdaTest | Matriz de compatibilidad entre navegadores (cuentas gratuitas o demos) |
 | Móvil / Escritorio | Appium, Maestro, Espresso, XCUITest, FlaUI, Pywinauto | Labs en emulador + estrategia emulador vs dispositivo real |
 | Regresión visual | Applitools, Percy, Chromatic · comparación visual nativa de Playwright (`toHaveScreenshot`) | Línea base visual + comparación asistida por IA, diseño responsivo y modo oscuro |
-| Mantenimiento | Healenium (autorreparación o *auto-healing*) + reparación de selectores asistida por IA generativa · Stryker JavaScript/TypeScript, PIT (Java), mutmut (Python) — pruebas de mutación (*Mutation Testing*) | Reducción de pruebas inestables + calidad del conjunto de pruebas más allá de la cobertura |
+| Mantenimiento | Selectores robustos (rol + texto) como primera defensa + reparación de selectores asistida por IA generativa · mapa de autorreparación (*auto-healing*): Healenium (Selenium) y Alumnium (IA, Playwright/Selenium/Appium) · Pruebas de mutación (*Mutation Testing*): **cosmic-ray** (Python), mapa de Stryker JavaScript/TypeScript y PIT (Java) | Reducción de pruebas inestables + calidad del conjunto de pruebas más allá de la cobertura |
 | Tooling base | — | `uv` (Python), `pnpm` (JS), `Taskfile`, `Git`, `Docker` como herramientas de ejecución y estandarización |
 
 **Sobre qué practicamos:** aplicaciones públicas de práctica — **SauceDemo** (https://www.saucedemo.com) para todo lo relacionado con interfaz de usuario, y APIs públicas de entrenamiento para los ejercicios de servicios.
@@ -37,11 +37,13 @@
 > **Herramientas del temario original actualizadas a 2026:**
 > - **CrossBrowserTesting** → discontinuado por SmartBear en julio 2023; lo sustituye **LambdaTest** (mismo rol, adopción vigente).
 > - **Recheck** → sin mantenimiento activo; lo sustituye la **comparación visual nativa de Playwright**, que ya usamos en el stack.
-> - **Testim** → hoy es Tricentis Testim (comercial); se menciona como referencia y el lab usa **Healenium** (open source) + un demo de reparación de selectores con IA generativa.
+> - **Testim** → hoy es Tricentis Testim (comercial); se menciona como referencia. El lab de mantenimiento (S8) practica **selectores robustos** + reparación con IA generativa, y deja Healenium/Alumnium en el mapa (no como stack obligatorio).
 > - **Newman** → sigue vigente y es el que usamos (no requiere cuenta); se menciona **Postman CLI** como su sucesor oficial.
 > - **REST-assured y Karate DSL** → vigentes y mantenidos, pero atados a la JVM (Java + Maven/Gradle); el curso es Python-first y cubre los mismos conceptos (validaciones, contratos, data-driven, paralelo) con **pytest + httpx**. Se presentan como referencia para quien trabaje en ecosistema Java.
 > - **Pact** → el *contract testing* se enseña como concepto con JSON Schema (S3) y contratos en código (S4); Pact se menciona como la herramienta profesional consumidor/proveedor.
-> - Se agregan **Maestro** (móvil, estándar emergente) y **mutmut** (mutación en Python, coherente con los labs del curso).
+> - Se agrega **Maestro** (móvil, estándar emergente).
+> - **mutmut** (mutación en Python) → mutmut 3.x depende de `fork` y **no corre en Windows nativo** (exige WSL). Lo sustituye **cosmic-ray**, mantenido activamente (2026), con soporte Windows nativo y reporte HTML — corre igual en los tres sistemas operativos sin workarounds. Stryker (JS/TS) y PIT (Java) siguen como estándar de sus ecosistemas (mapa).
+> - **Healenium** (autorreparación) → es **solo Selenium** y requiere un stack de ~5 contenedores (PostgreSQL + proxy + backend + selector-imitator + grid); el curso es Playwright-first desde la S2. Se mantiene en el mapa como opción para equipos Selenium. En su lugar, el lab practica la recomendación 2026: **selectores robustos por rol/texto** como defensa primaria (sin instalar nada) + **reparación de selectores con IA generativa**; se menciona **Alumnium** (open source, IA-nativo para Playwright/Selenium/Appium) como la capa de healing emergente.
 
 ---
 
@@ -68,7 +70,7 @@ Sesión a sesión construimos un **flujo automatizado de control de calidad** so
 ```
 
 Cada sesión agrega una etapa al flujo. Al terminar la Sesión 10, todo corre en Jenkins **y** en GitHub Actions.
-Los **retos del curso** se integran directamente al proyecto: Reto 1 (Jenkins + Postman + K6) en las Sesiones 5-6; Reto 2 (OWASP ZAP) en la Sesión 7.
+Los hitos prácticos se integran al proyecto: criterio CI + API + K6 en las Sesiones 5-6; escaneo ZAP + Axe como **lab sincronizado** en la Sesión 7 (seguís al instructor en simultáneo).
 
 ---
 
@@ -78,12 +80,12 @@ Los **retos del curso** se integran directamente al proyecto: Reto 1 (Jenkins + 
 |---|---|---|---|
 | **S1** ✅ | 3h | **Diseño técnico de pruebas:** partición de equivalencias, valores límite, tablas de decisión, combinatorias · Mantenibilidad (reusabilidad, desacoplamiento, modulación) · Matriz de trazabilidad | Laboratorio de diseño ejecutable + matriz de trazabilidad inicial Requerimientos↔Casos↔Defectos |
 | **S2** ✅ | 3h | **Desarrollo de scripts:** Page Object Model (POM), Screenplay, Don't Repeat Yourself (DRY) · datos/estados de prueba compartidos (*fixtures*), aserciones (*assertions*), manejo de errores, validaciones dinámicas · Datos externos: JSON/YAML/CSV/bases de datos/mocks · Lenguajes: Java, Python, JavaScript, C# | Conjunto base de pruebas de interfaz de usuario con POM + capa de datos externa desacoplada |
-| **S3** | 3h | **APIs y servicios web I:** REST (*Representational State Transfer*) vs SOAP (*Simple Object Access Protocol*) vs GraphQL · Postman (colecciones) + Newman (con mención de Postman CLI, su sucesor oficial) · Validaciones: status, headers, payloads, esquemas JSON/XML (*Extensible Markup Language*) | Colección Postman versionada + Newman en Taskfile (Etapa 2a) |
-| **S4** | 3h | **APIs II — automatización con Python:** cliente httpx con KISS · pytest + fixtures (DRY) · Data-Driven con JSON/YAML · contratos de API en código · Referencia: REST-assured y Karate DSL (*Domain-Specific Language*) para ecosistema Java · concepto de contratos consumidor/proveedor (Pact) | Suite pytest de APIs con cliente propio, fixtures y data-driven (Etapas 2b y 3) |
-| **S5** | 3h | **CI/CD:** GitHub Actions, Jenkins, GitLab CI, Azure Pipelines · disparadores por push, Pull Request y ejecución nocturna · Docker: Selenium Grid, Playwright, Cypress · **Inicio Reto 1** | Jenkinsfile + flujo de GitHub Actions con etapas 1-4 en contenedores |
-| **S6** | 3h | **Performance:** K6 como infraestructura como código (*Infrastructure as Code*, IaC) y JMeter · umbrales (*thresholds*), escenarios de carga · Karate+Gatling · **Cierre Reto 1** (Jenkins + Postman + K6) | Etapa 5 con umbrales de performance como criterio de aprobación — **Reto 1 entregado** |
-| **S7** | 3h | **Seguridad y otras no funcionales:** OWASP ZAP (escaneo base automatizado), Burp Suite · Axe/Lighthouse (WCAG) · Compatibilidad (BrowserStack/SauceLabs/LambdaTest) · **Reto 2** | Etapas 6-7: ZAP + Axe en flujo automatizado — **Reto 2 entregado** |
-| **S8** | 3h | **Mantenimiento:** reducción de pruebas inestables, refactorización, anotaciones condicionales, separación lógica/datos, versionado y trazabilidad · **Autorreparación** (*auto-healing*) con Healenium + reparación de selectores con IA generativa · **Pruebas de mutación** (*Mutation Testing*) con Stryker JavaScript/TypeScript, PIT (Java) y mutmut (Python) | Etapa 8: criterio de puntaje de mutación (*mutation score*) + demo de autorreparación |
+| **S3** ✅ | 3h | **APIs y servicios web I:** REST (*Representational State Transfer*) vs SOAP (*Simple Object Access Protocol*) vs GraphQL · Postman (colecciones) + Newman (con mención de Postman CLI, su sucesor oficial) · Validaciones: status, headers, payloads, esquemas JSON/XML (*Extensible Markup Language*) | Colección Postman versionada + Newman en Taskfile (Etapa 2a) |
+| **S4** ✅ | 3h | **APIs II — automatización con Python:** cliente httpx con KISS · pytest + fixtures (DRY) · Data-Driven con JSON/YAML · contratos de API en código · Referencia: REST-assured y Karate DSL (*Domain-Specific Language*) para ecosistema Java · concepto de contratos consumidor/proveedor (Pact) | Suite pytest de APIs con cliente propio, fixtures y data-driven (Etapas 2b y 3) |
+| **S5** ✅ | 3h | **CI/CD:** GitHub Actions (hands-on) + Docker local · mapa Jenkins/GitLab CI/Azure Pipelines · disparadores push/PR · **Inicio Reto 1** | Workflow `qa-api.yml` + `ci-lab` Docker (misma suite api-lab) — etapas 1-4 en contenedor |
+| **S6** ✅ | 3h | **Performance:** K6 en Docker como IaC · smoke/load + thresholds · mapa JMeter/Gatling · **Cierre Reto 1** (CI + API + K6) | `performance/` con target local + umbrales — **Reto 1 entregado (criterio)** |
+| **S7** ✅ | 3h | **Seguridad y otras no funcionales:** OWASP ZAP baseline (Juice Shop local) · mapa Burp · Axe/Lighthouse (WCAG) · mapa BrowserStack/SauceLabs/LambdaTest · **lab sincronizado en clase** (sin reto aparte) | Etapas 6-7: `security/` con ZAP + Axe — práctica entregada en sesión |
+| **S8** | 3h | **Mantenimiento:** reducción de pruebas inestables (*flaky*), refactorización, anotaciones condicionales, separación lógica/datos, versionado y trazabilidad · **Pruebas de mutación** (*Mutation Testing*) con **cosmic-ray** (Python; mapa de Stryker JS/TS y PIT Java) · selectores robustos + reparación con IA generativa · mapa de autorreparación (Healenium/Alumnium) · **lab sincronizado en clase** | Etapa 8: gate de puntaje de mutación (*mutation score*) sobre `maintenance-lab/` + demo de flaky y selectores robustos |
 | **S9** | 3h | **Móviles y escritorio:** Appium, Maestro, Espresso, XCUITest, FlaUI, Pywinauto · híbrido vs nativo · emuladores vs dispositivos reales · **Regresión visual:** línea base visual + IA (Applitools/Percy + Playwright nativo), diseño responsivo, media queries y modo oscuro | Pruebas móviles básicas (*smoke*) con Appium + validación visual en el flujo automatizado |
 | **S10** | 2h | **Cierre:** integración final del flujo automatizado, demo end-to-end, revisión de retos, resolución de dudas y evaluación de conocimientos | **Puerta de Calidad de Release** completa funcionando + retrospectiva |
 
@@ -109,15 +111,18 @@ curso-automatizacion-apis-performance-seguridad/
 ├── SETUP_ESTUDIANTES.md       ← guía de instalación para estudiantes
 ├── proyecto-integrador/       ← Puerta de Calidad de Release (crece cada sesión)
 │   ├── trazabilidad/          ← matriz de trazabilidad (S1)
-│   ├── api-tests/             ← Postman/Newman, Karate, Pact (S3-S4)
-│   ├── performance/           ← scripts K6 (S6)
-│   ├── security/              ← config OWASP ZAP (S7)
+│   ├── api-lab/               ← pytest + httpx (S4)
+│   ├── ci-lab/                ← Docker espejo de CI (S5)
+│   ├── performance/           ← K6 + target local (S6)
+│   ├── security/              ← Juice Shop + ZAP baseline + Axe (S7)
+│   ├── maintenance-lab/       ← mutation testing (cosmic-ray) + flaky + selectores (S8)
 │   └── flujos-ci/             ← Jenkinsfile + flujos automatizados (S5+)
-└── retos/                     ← Reto 1 y Reto 2 (enunciado + solución)
 ```
 
-## 7. Evaluación y metodología
+> Guías del instructor (`sesiones/sesion-XX/GUIA_INSTRUCTOR.md`) son material privado del docente.
+
+## Evaluación y metodología
 
 - Discusión de casos reales en cada sesión — no hay teoría suelta sin contexto.
-- Entrega de los **Retos 1 y 2** como hitos obligatorios del programa.
+- Labs sincronizados (el estudiante sigue al instructor en simultáneo) como hito práctico de cada bloque.
 - Espacio al final de cada sesión para resolver dudas sobre lo visto.
