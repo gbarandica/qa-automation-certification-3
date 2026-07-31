@@ -8,6 +8,7 @@ vars:
   CI_LAB: proyecto-integrador/ci-lab
   PERF_LAB: proyecto-integrador/performance
   SECURITY_LAB: proyecto-integrador/security
+  MAINT_LAB: proyecto-integrador/maintenance-lab
 
 tasks:
   # ── Sesión 1: Diseño de pruebas ───────────────────────────────────────────
@@ -95,8 +96,49 @@ tasks:
       - python scripts/run_baseline.py
 
   test:security:axe:
-    desc: "S7 — Demo Axe (WCAG) sobre bad_page.html"
+    desc: "S7 — Gate Axe (WCAG); exit 1 esperado (bad_page rota a propósito)"
     dir: "{{.SECURITY_LAB}}/a11y"
     cmds:
       - uv sync --group dev
       - uv run pytest -v
+
+  # ── Sesión 8: Mantenimiento, mutación y selectores robustos ───────────────
+  # Todas estas tasks son IDEMPOTENTES: misma salida / mismo exit code en limpio.
+  # Antes de la primera vez: `task setup:maint`
+  setup:maint:
+    desc: "S8 — Instala dependencias del laboratorio de mantenimiento + Chromium"
+    dir: "{{.MAINT_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run playwright install chromium
+
+  test:maint:
+    desc: "S8 — Suite oficial (la débil a propósito) del maintenance-lab"
+    dir: "{{.MAINT_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run pytest -v
+
+  test:maint:mutation:
+    desc: "S8 — Mutation testing (cosmic-ray) + HTML; exit 0 con suite débil (score 50%)"
+    dir: "{{.MAINT_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - python scripts/run_mutation.py
+      # Gate estricto (exit 1 con suite débil): python scripts/run_mutation.py --enforce-gate
+
+  test:maint:flaky:
+    desc: "S8 — Demo flaky DETERMINISTA (prueba que hay flakiness + cura con semilla)"
+    dir: "{{.MAINT_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run pytest flaky/test_flaky_consistent.py -v
+      # Demo en vivo (NO determinista, solo a mano en clase):
+      #   uv run pytest flaky/test_flaky_demo.py::test_worker_es_w1_FLAKY -v
+
+  test:maint:healing:
+    desc: "S8 — Selector frágil vs robusto; exit 1 esperado (1 failed + 1 passed)"
+    dir: "{{.MAINT_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run pytest healing -v

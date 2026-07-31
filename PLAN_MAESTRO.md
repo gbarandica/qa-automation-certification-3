@@ -126,3 +126,4 @@ curso-automatizacion-apis-performance-seguridad/
 - Discusión de casos reales en cada sesión — no hay teoría suelta sin contexto.
 - Labs sincronizados (el estudiante sigue al instructor en simultáneo) como hito práctico de cada bloque.
 - Espacio al final de cada sesión para resolver dudas sobre lo visto.
+- **Retos del curso** (teóricos + práctico Release Gate): carpeta [`retos/`](retos/). Paquete completo para compartir: [`retos/RETOS_COMPLETOS.md`](retos/RETOS_COMPLETOS.md). Práctico en código: https://github.com/dsolisp/curso/tree/main/retos/reto-practico
