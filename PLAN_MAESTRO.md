@@ -44,6 +44,7 @@
 > - Se agrega **Maestro** (móvil, estándar emergente).
 > - **mutmut** (mutación en Python) → mutmut 3.x depende de `fork` y **no corre en Windows nativo** (exige WSL). Lo sustituye **cosmic-ray**, mantenido activamente (2026), con soporte Windows nativo y reporte HTML — corre igual en los tres sistemas operativos sin workarounds. Stryker (JS/TS) y PIT (Java) siguen como estándar de sus ecosistemas (mapa).
 > - **Healenium** (autorreparación) → es **solo Selenium** y requiere un stack de ~5 contenedores (PostgreSQL + proxy + backend + selector-imitator + grid); el curso es Playwright-first desde la S2. Se mantiene en el mapa como opción para equipos Selenium. En su lugar, el lab practica la recomendación 2026: **selectores robustos por rol/texto** como defensa primaria (sin instalar nada) + **reparación de selectores con IA generativa**; se menciona **Alumnium** (open source, IA-nativo para Playwright/Selenium/Appium) como la capa de healing emergente.
+> - **Appium + emulador** (lab móvil del temario) → el setup de SDK/drivers se come una clase de 45 min y no es multiplataforma “sin trucos”. El lab S9 practica el mismo concepto con **Playwright** (viewport móvil + baselines PNG + gate de diff). Appium, Maestro, Espresso, XCUITest, FlaUI y Pywinauto quedan en el **mapa**; Applitools/Percy también (IA visual comercial frente a PNG local).
 
 ---
 
@@ -85,9 +86,9 @@ Los hitos prácticos se integran al proyecto: criterio CI + API + K6 en las Sesi
 | **S5** ✅ | 3h | **CI/CD:** GitHub Actions (hands-on) + Docker local · mapa Jenkins/GitLab CI/Azure Pipelines · disparadores push/PR · **Inicio Reto 1** | Workflow `qa-api.yml` + `ci-lab` Docker (misma suite api-lab) — etapas 1-4 en contenedor |
 | **S6** ✅ | 3h | **Performance:** K6 en Docker como IaC · smoke/load + thresholds · mapa JMeter/Gatling · **Cierre Reto 1** (CI + API + K6) | `performance/` con target local + umbrales — **Reto 1 entregado (criterio)** |
 | **S7** ✅ | 3h | **Seguridad y otras no funcionales:** OWASP ZAP baseline (Juice Shop local) · mapa Burp · Axe/Lighthouse (WCAG) · mapa BrowserStack/SauceLabs/LambdaTest · **lab sincronizado en clase** (sin reto aparte) | Etapas 6-7: `security/` con ZAP + Axe — práctica entregada en sesión |
-| **S8** | 3h | **Mantenimiento:** reducción de pruebas inestables (*flaky*), refactorización, anotaciones condicionales, separación lógica/datos, versionado y trazabilidad · **Pruebas de mutación** (*Mutation Testing*) con **cosmic-ray** (Python; mapa de Stryker JS/TS y PIT Java) · selectores robustos + reparación con IA generativa · mapa de autorreparación (Healenium/Alumnium) · **lab sincronizado en clase** | Etapa 8: gate de puntaje de mutación (*mutation score*) sobre `maintenance-lab/` + demo de flaky y selectores robustos |
-| **S9** | 3h | **Móviles y escritorio:** Appium, Maestro, Espresso, XCUITest, FlaUI, Pywinauto · híbrido vs nativo · emuladores vs dispositivos reales · **Regresión visual:** línea base visual + IA (Applitools/Percy + Playwright nativo), diseño responsivo, media queries y modo oscuro | Pruebas móviles básicas (*smoke*) con Appium + validación visual en el flujo automatizado |
-| **S10** | 2h | **Cierre:** integración final del flujo automatizado, demo end-to-end, revisión de retos, resolución de dudas y evaluación de conocimientos | **Puerta de Calidad de Release** completa funcionando + retrospectiva |
+| **S8** ✅ | 3h | **Mantenimiento:** reducción de pruebas inestables (*flaky*), refactorización, anotaciones condicionales, separación lógica/datos, versionado y trazabilidad · **Pruebas de mutación** (*Mutation Testing*) con **cosmic-ray** (Python; mapa de Stryker JS/TS y PIT Java) · selectores robustos + reparación con IA generativa · mapa de autorreparación (Healenium/Alumnium) · **lab sincronizado en clase** | Etapa 8: gate de puntaje de mutación (*mutation score*) sobre `maintenance-lab/` + demo de flaky y selectores robustos |
+| **S9** ✅ | 3h | **Móviles y escritorio:** mapa Appium/Maestro/Espresso/XCUITest/FlaUI/Pywinauto · híbrido vs nativo · emulador vs real · **Regresión visual** con baselines PNG (Playwright) + mapa Applitools/Percy · responsive y modo oscuro · **lab sincronizado** | Etapa 9: `mobile-visual-lab/` — smoke viewport móvil + gate visual (diff → rojo) |
+| **S10** ✅ | 2h | **Cierre:** integración final del flujo automatizado, demo del juez de métricas, revisión de retos, evaluación rápida y retrospectiva | **Puerta de Calidad de Release** (`release-gate/`) + retrospectiva |
 
 **Total: 9×3h + 1×2h = 29 horas.**
 
@@ -116,6 +117,8 @@ curso-automatizacion-apis-performance-seguridad/
 │   ├── performance/           ← K6 + target local (S6)
 │   ├── security/              ← Juice Shop + ZAP baseline + Axe (S7)
 │   ├── maintenance-lab/       ← mutation testing (cosmic-ray) + flaky + selectores (S8)
+│   ├── mobile-visual-lab/     ← smoke móvil (viewport) + baselines visuales (S9)
+│   ├── release-gate/          ← juez único de métricas / Puerta de Release (S10)
 │   └── flujos-ci/             ← Jenkinsfile + flujos automatizados (S5+)
 ```
 

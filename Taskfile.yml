@@ -9,6 +9,8 @@ vars:
   PERF_LAB: proyecto-integrador/performance
   SECURITY_LAB: proyecto-integrador/security
   MAINT_LAB: proyecto-integrador/maintenance-lab
+  MOBILE_LAB: proyecto-integrador/mobile-visual-lab
+  GATE_LAB: proyecto-integrador/release-gate
 
 tasks:
   # ── Sesión 1: Diseño de pruebas ───────────────────────────────────────────
@@ -142,3 +144,48 @@ tasks:
     cmds:
       - uv sync --group dev
       - uv run pytest healing -v
+
+  # ── Sesión 9: Móvil (viewport) + regresión visual ─────────────────────────
+  setup:mobile:
+    desc: "S9 — Deps + Chromium + baselines visuales"
+    dir: "{{.MOBILE_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run playwright install chromium
+      - uv run python scripts/capture_baselines.py
+
+  test:mobile:
+    desc: "S9 — Smoke móvil + regresión visual (exit 0 · 5 passed)"
+    dir: "{{.MOBILE_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run pytest tests -v
+
+  test:mobile:gate:
+    desc: "S9 — Gate visual con UI rota; exit 1 esperado"
+    dir: "{{.MOBILE_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run pytest gate -v
+
+  # ── Sesión 10: Release Gate (juez único) ──────────────────────────────────
+  test:gate:
+    desc: "S10 — Tests del juez release-gate (6 passed)"
+    dir: "{{.GATE_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run pytest -v
+
+  test:gate:healthy:
+    desc: "S10 — Release sano → exit 0"
+    dir: "{{.GATE_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run python run_gate.py metrics/healthy.json
+
+  test:gate:blocked:
+    desc: "S10 — Release bloqueado (mutation) → exit 1"
+    dir: "{{.GATE_LAB}}"
+    cmds:
+      - uv sync --group dev
+      - uv run python run_gate.py metrics/blocked_mutation.json
